@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { PLATFORMS } from "../platformConfig";
 import { validateAll } from "../validation";
 import PlatformSelector from "./PlatformSelector";
@@ -6,11 +6,28 @@ import MediaUploader from "./MediaUploader";
 import ValidationPanel from "./ValidationPanel";
 import "./PostComposer.css";
 
-export default function PostComposer() {
+export default function PostComposer({ draftsApi, editingDraft, onDraftSaved }) {
   const [text, setText] = useState("");
   const [media, setMedia] = useState([]);
   const [selectedIds, setSelectedIds] = useState(["twitter"]);
   const [submitted, setSubmitted] = useState(null); // null | "success"
+  const [draftFeedback, setDraftFeedback] = useState(null); // null | "saved" | "error"
+
+  const isEditing = Boolean(editingDraft);
+  const isSavingDraft = draftsApi.pendingId === (editingDraft?.id || "new");
+
+  // When the user clicks "Edit" on a saved draft, populate the composer
+  // fields from it. Keyed off editingDraft?.id so re-selecting the same
+  // draft doesn't wipe unsaved edits.
+  useEffect(() => {
+    if (editingDraft) {
+      setText(editingDraft.text || "");
+      setMedia(editingDraft.media || []);
+      setSelectedIds(editingDraft.platformIds?.length ? editingDraft.platformIds : ["twitter"]);
+      setSubmitted(null);
+      setDraftFeedback(null);
+    }
+  }, [editingDraft?.id]);
 
   const selectedPlatforms = useMemo(
     () => selectedIds.map((id) => PLATFORMS[id]),
@@ -38,6 +55,12 @@ export default function PostComposer() {
     setMedia((prev) => prev.filter((m) => m.id !== id));
   }
 
+  function resetComposer() {
+    setText("");
+    setMedia([]);
+    setSelectedIds(["twitter"]);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!allValid) return;
@@ -45,15 +68,39 @@ export default function PostComposer() {
     setSubmitted("success");
   }
 
-  // The tightest limit among selected platforms drives the textarea's
-  // hard character cap, so typing naturally stops making things worse.
-  const tightestLimit = selectedPlatforms.length
-    ? Math.min(...selectedPlatforms.map((p) => p.charLimit))
-    : Infinity;
+  async function handleSaveDraft() {
+    setDraftFeedback(null);
+    try {
+      await draftsApi.saveDraft(
+        { text, media, platformIds: selectedIds },
+        editingDraft?.id
+      );
+      setDraftFeedback("saved");
+      resetComposer();
+      onDraftSaved();
+    } catch {
+      setDraftFeedback("error");
+    }
+  }
+
+  function handleCancelEdit() {
+    resetComposer();
+    onDraftSaved(); // clears editingDraftId in the parent
+  }
 
   return (
     <form className="post-composer" onSubmit={handleSubmit}>
-      <h2 className="post-composer__title">Create post</h2>
+      <div className="post-composer__header">
+        <h2 className="post-composer__title">Create post</h2>
+        {isEditing && (
+          <span className="post-composer__editing-badge">
+            Editing draft
+            <button type="button" onClick={handleCancelEdit}>
+              cancel
+            </button>
+          </span>
+        )}
+      </div>
 
       <PlatformSelector selectedIds={selectedIds} onToggle={togglePlatform} />
 
@@ -77,8 +124,24 @@ export default function PostComposer() {
           Publish to {selectedPlatforms.length || 0} platform
           {selectedPlatforms.length === 1 ? "" : "s"}
         </button>
+
+        <button
+          type="button"
+          className="post-composer__save-draft"
+          onClick={handleSaveDraft}
+          disabled={isSavingDraft || (!text.trim() && media.length === 0)}
+        >
+          {isSavingDraft ? "Saving…" : isEditing ? "Update draft" : "Save as draft"}
+        </button>
+
         {submitted === "success" && (
           <span className="post-composer__success">Post published ✓</span>
+        )}
+        {draftFeedback === "saved" && (
+          <span className="post-composer__success">Draft saved ✓</span>
+        )}
+        {draftFeedback === "error" && (
+          <span className="post-composer__draft-error">Couldn't save draft, try again.</span>
         )}
       </div>
     </form>

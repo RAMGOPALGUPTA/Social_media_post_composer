@@ -1,0 +1,162 @@
+.draft-manager {
+  max-width: 640px;
+  margin: 20px auto 0;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.draft-manager__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.draft-manager__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.draft-manager__refresh {
+  border: 1.5px solid #ddd;
+  background: #fff;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.draft-manager__refresh:hover {
+  border-color: #5b8def;
+  color: #5b8def;
+}
+
+.draft-manager__status {
+  color: #888;
+  font-size: 0.875rem;
+}
+
+.draft-manager__error {
+  background: #fff5f5;
+  border: 1px solid #f3caca;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #c62828;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.draft-manager__error button {
+  border: 1px solid #c62828;
+  background: #fff;
+  color: #c62828;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.draft-manager__inline-error {
+  margin-top: 10px;
+  color: #c62828;
+  font-size: 0.8rem;
+}
+
+.draft-manager__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.draft-card {
+  border: 1.5px solid #eee;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fcfcfd;
+  transition: border-color 0.15s ease;
+}
+
+.draft-card--editing {
+  border-color: #5b8def;
+  background: #f5f8ff;
+}
+
+.draft-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.draft-card__platforms {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.draft-card__time {
+  font-size: 0.72rem;
+  color: #999;
+}
+
+.draft-card__text {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #333;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 4.5em;
+  overflow: hidden;
+}
+
+.draft-card__media {
+  font-size: 0.72rem;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.draft-card__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.draft-card__edit,
+.draft-card__delete {
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  border: 1.5px solid #ddd;
+  background: #fff;
+}
+
+.draft-card__edit:hover {
+  border-color: #5b8def;
+  color: #5b8def;
+}
+
+.draft-card__delete:hover {
+  border-color: #e14b4b;
+  color: #e14b4b;
+}
+
+.draft-card__edit:disabled,
+.draft-card__delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .draft-manager {
+    padding: 14px;
+    border-radius: 0;
+  }
+}
