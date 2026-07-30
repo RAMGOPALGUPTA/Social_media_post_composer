@@ -1,4 +1,4 @@
-# Post Composer — Experiment 1.1.1
+# Post Composer — Experiment 1.1.1 & Experiment 1.1.2 Combine 
 
 A multi-platform post composer built with React. Users can write a post,
 select one or more target platforms (Twitter/X, Instagram, LinkedIn,
