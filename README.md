@@ -50,8 +50,7 @@ post-composer/
 npm install
 npm run dev
 ```
-
-Then open the printed local URL (usually `http://localhost:5173`).
+Deployed live on : https://social-media-post-composer-pi.vercel.app/
 
 ## Extending it
 
